@@ -40,10 +40,12 @@ defmodule KV.Registry do
     {:ok, {names, refs}}
   end
 
+  # must be used for syncronous requests
   def handle_call({:lookup, name}, _from, {names, _} = state) do
     {:reply, Map.fetch(names, name), state}
   end
 
+  # used for async requests. Note that there's no guarantee that the server recieved the message
   def handle_cast({:create, name}, {names, refs}) do
     if Map.has_key?(names, name) do
       {:noreply, {names, refs}}
